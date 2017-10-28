@@ -91,6 +91,5 @@ data_p2%>%
     labs(title = "Plot of GDP Values over Time",
          x = "Time",
          y = "GDP")
-
-
 ```
+*Looking at the graphs, when the governments with democratic presidents seize power, it shows the higher GDP
