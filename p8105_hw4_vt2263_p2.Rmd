@@ -1,0 +1,71 @@
+---
+title: "Home work 4"
+author: "Volha Tryputsen"
+date: "October 28, 2017"
+output: 
+  html_document:
+    theme: cosmo
+    highlight: haddock
+    toc: true
+    toc_float:
+      collapse: true
+      smooth_scroll: false
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(fig.width = 6, fig.asp = .6, out.width = "90%")
+options(knitr.table.format = "html") 
+```
+
+```{r libraries, message=FALSE}
+library(tidyverse)
+library(janitor) # clean names
+library(knitr)
+library(lubridate)
+```
+
+
+# Problem 2
+```{r}
+#dat_pols <- "../data/fivethirtyeight_datasets/pols-month.csv"
+#dat_gdp <- "../data/fivethirtyeight_datasets/GDP.csv"
+
+dat_pols <- "./pols-month.csv"
+dat_gdp <- "./GDP.csv"
+```
+
+```{r data_import_cleaning_problem2, message=FALSE}
+data_pols = 
+  read_csv(dat_pols, col_types = "Dciiiciii") %>% 
+  clean_names()
+
+data_pols_clean = 
+  data_pols %>%
+  mutate(date = floor_date(mon, "month")) %>%
+  mutate(president = as.character(ifelse(prez_dem=="1", "dem", "gop"))) %>%
+  select(-c(mon, prez_dem, prez_gop)) %>%
+  select(date, president, everything()) %>%
+  arrange(date)
+
+data_gdp = 
+  read_csv(dat_gdp) %>% 
+  clean_names()
+
+data_gdp_clean = 
+  data_gdp %>%
+  mutate(gdp = replace(value, value == ".", NA)) %>%
+  mutate(gdp = as.numeric(gdp)) %>%
+  select(-value)
+
+data_p2 = full_join(data_pols_clean, data_gdp_clean)
+```
+
+Dataset `data_pols_clean` contains `r nrow(data_pols_clean)` observations and `r ncol(data_pols_clean)` variables (`r colnames(data_pols_clean)`) related to the number of national politicians who are democratic or republican at a given month and year between `r data_pols_clean[1,"date"] %>% pull` and `r data_pols_clean[nrow(data_pols_clean), "date"] %>% pull`. During data cleaning step a new variable `president` was created which takes values `r unique(data_pols_clean$president)`. 
+Existing indicator variables `prez_dem` and `prez_gop` were used to creat variable `president`. However, only `prez_dem` variable was used for coding for variable `president` because `prez_gop` had values of `2` which is not recorded in variable descrtiption and thus could be either a coding mistake or, perhapse, a coding for missing values.   
+Variable `date` was also created by collapsing `mon` variable to the first date of the month.   
+
+Dataset `data_gdp_clean`  contains `r nrow(data_gdp_clean)` observations and `r ncol(data_gdp_clean)` variables (`r colnames(data_gdp_clean)`) related to the value of GDP at a given month and year between `r data_gdp_clean[1,c("date")]` and `r data_gdp_clean[nrow(data_gdp_clean),"date"]`.
+
+Datasets `data_pols_clean` and `data_gdp_clean` were merged by `date` variable. The resulting dataset `data_p2` contains `r nrow(data_p2)` observations and `r ncol(data_p2)` variables.     
+
