@@ -69,7 +69,7 @@ Dataset `data_gdp_clean`  contains `r nrow(data_gdp_clean)` observations and `r 
 
 Datasets `data_pols_clean` and `data_gdp_clean` were merged by `date` variable. The resulting dataset `data_p2` contains `r nrow(data_p2)` observations and `r ncol(data_p2)` variables.     
 
-```{r}
+```{r message=FALSE}
 
 data_p2%>%
   filter(!is.na(gdp) & !gdp == ".")%>% 
@@ -79,7 +79,8 @@ data_p2%>%
             theme(legend.position = "bottom")+
             labs(title = "GDP Values for Each Party over Time",
                  x = "Time",
-                 y = "GDP") 
+                 y = "GDP",
+                 caption = "Figure 1") 
 
 data_p2%>%
   filter(!is.na(gdp) & !gdp == ".")%>% 
@@ -90,6 +91,8 @@ data_p2%>%
     theme(legend.position = "bottom")+
     labs(title = "Plot of GDP Values over Time",
          x = "Time",
-         y = "GDP")
+         y = "GDP",
+         caption = "Figure 2")
 ```
-*Looking at the graphs, when the governments with democratic presidents seize power, it shows the higher GDP
+
+**Figure 1** and **Figure 2** shows GDP over time for both government parties (democratic and republican, or gop). Loess smoother used to approximate GOP trend over time for both parties reveals that when the governments with democratic presidents seize power, it shows the higher GDP. However, the GDP trend seems to change after 2010, but more data is needed to state that with certainty.  
