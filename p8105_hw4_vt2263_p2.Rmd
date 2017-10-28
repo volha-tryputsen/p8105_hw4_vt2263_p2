@@ -69,3 +69,28 @@ Dataset `data_gdp_clean`  contains `r nrow(data_gdp_clean)` observations and `r 
 
 Datasets `data_pols_clean` and `data_gdp_clean` were merged by `date` variable. The resulting dataset `data_p2` contains `r nrow(data_p2)` observations and `r ncol(data_p2)` variables.     
 
+```{r}
+
+data_p2%>%
+  filter(!is.na(gdp) & !gdp == ".")%>% 
+    select(date, president, gdp)%>%
+    ggplot(aes(x= date, y = gdp))+geom_point(alpha = 0.5)+ geom_smooth(aes(group = president, 
+            color =     president), se = FALSE, show.legend = FALSE)+ facet_grid(. ~president)+
+            theme(legend.position = "bottom")+
+            labs(title = "GDP Values for Each Party over Time",
+                 x = "Time",
+                 y = "GDP") 
+
+data_p2%>%
+  filter(!is.na(gdp) & !gdp == ".")%>% 
+    select(date, president, gdp)%>%
+    ggplot(aes(x = date, y = gdp, color = president)) +
+    geom_point(alpha = 0.5) +
+    geom_smooth(se = FALSE) +
+    theme(legend.position = "bottom")+
+    labs(title = "Plot of GDP Values over Time",
+         x = "Time",
+         y = "GDP")
+
+
+```
